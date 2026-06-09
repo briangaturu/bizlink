@@ -49,10 +49,8 @@ export default function HeroSection() {
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Stagger-in on mount
     const t = setTimeout(() => setMounted(true), 50);
 
-    // Subtle parallax on mouse move
     const handleMouse = (e: MouseEvent) => {
       if (!heroRef.current) return;
       const rect = heroRef.current.getBoundingClientRect();
@@ -90,11 +88,6 @@ export default function HeroSection() {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
         }
-        @keyframes pulse-ring {
-          0% { transform: scale(0.92); opacity: 0.6; }
-          50% { transform: scale(1.04); opacity: 0.15; }
-          100% { transform: scale(0.92); opacity: 0.6; }
-        }
         @keyframes slide-up {
           from { opacity: 0; transform: translateY(28px); }
           to { opacity: 1; transform: translateY(0); }
@@ -107,16 +100,12 @@ export default function HeroSection() {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
-        @keyframes dot-bounce {
-          0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
-          40% { transform: scale(1.1); opacity: 1; }
-        }
 
         .hero-shimmer-text {
           background: linear-gradient(
             90deg,
             #111827 0%, #111827 30%,
-            #16a34a 45%,
+            #ea580c 45%,
             #111827 60%, #111827 100%
           );
           background-size: 200% auto;
@@ -129,7 +118,7 @@ export default function HeroSection() {
         .btn-primary-hero {
           position: relative;
           overflow: hidden;
-          background: #16a34a;
+          background: #ea580c;
           color: white;
           transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
                       box-shadow 0.2s ease,
@@ -145,8 +134,8 @@ export default function HeroSection() {
         }
         .btn-primary-hero:hover {
           transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 12px 30px rgba(22, 163, 74, 0.4);
-          background: #15803d;
+          box-shadow: 0 12px 30px rgba(234, 88, 12, 0.4);
+          background: #c2410c;
         }
         .btn-primary-hero:hover::before { opacity: 1; }
         .btn-primary-hero:active { transform: translateY(0) scale(0.98); }
@@ -154,8 +143,8 @@ export default function HeroSection() {
         .btn-outline-hero {
           position: relative;
           overflow: hidden;
-          border: 1.5px solid #16a34a;
-          color: #16a34a;
+          border: 1.5px solid #ea580c;
+          color: #ea580c;
           background: transparent;
           transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
                       box-shadow 0.2s ease,
@@ -166,7 +155,7 @@ export default function HeroSection() {
           content: '';
           position: absolute;
           inset: 0;
-          background: #16a34a;
+          background: #ea580c;
           transform: scaleX(0);
           transform-origin: left;
           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -175,7 +164,7 @@ export default function HeroSection() {
         .btn-outline-hero:hover {
           color: white;
           transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 12px 30px rgba(22, 163, 74, 0.2);
+          box-shadow: 0 12px 30px rgba(234, 88, 12, 0.2);
         }
         .btn-outline-hero:hover::after { transform: scaleX(1); }
         .btn-outline-hero:active { transform: translateY(0) scale(0.98); }
@@ -185,7 +174,7 @@ export default function HeroSection() {
         }
         .stat-card:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 24px rgba(22, 163, 74, 0.12);
+          box-shadow: 0 8px 24px rgba(234, 88, 12, 0.12);
         }
       `}</style>
 
@@ -199,15 +188,15 @@ export default function HeroSection() {
             className="absolute inset-0 opacity-40"
             style={{
               background:
-                "radial-gradient(ellipse at 20% 50%, #dcfce7 0%, transparent 55%), " +
-                "radial-gradient(ellipse at 80% 20%, #f0fdf4 0%, transparent 50%), " +
-                "radial-gradient(ellipse at 60% 90%, #ecfdf5 0%, transparent 45%)",
+                "radial-gradient(ellipse at 20% 50%, #ffedd5 0%, transparent 55%), " +
+                "radial-gradient(ellipse at 80% 20%, #fff7ed 0%, transparent 50%), " +
+                "radial-gradient(ellipse at 60% 90%, #ffedd5 0%, transparent 45%)",
             }}
           />
 
           {/* Animated orbs */}
           <Orb
-            className="w-72 h-72 -top-24 -left-24 bg-green-100 opacity-60"
+            className="w-72 h-72 -top-24 -left-24 bg-orange-100 opacity-60"
             style={{
               animation: "float-slow 8s ease-in-out infinite",
               filter: "blur(40px)",
@@ -216,7 +205,7 @@ export default function HeroSection() {
             } as React.CSSProperties}
           />
           <Orb
-            className="w-56 h-56 -bottom-16 -right-16 bg-green-200 opacity-40"
+            className="w-56 h-56 -bottom-16 -right-16 bg-orange-200 opacity-40"
             style={{
               animation: "float-medium 10s ease-in-out infinite 2s",
               filter: "blur(30px)",
@@ -225,7 +214,7 @@ export default function HeroSection() {
             } as React.CSSProperties}
           />
           <Orb
-            className="w-32 h-32 top-1/2 right-1/4 bg-emerald-100 opacity-50"
+            className="w-32 h-32 top-1/2 right-1/4 bg-orange-100 opacity-50"
             style={{
               animation: "float-slow 12s ease-in-out infinite 4s",
               filter: "blur(20px)",
@@ -236,8 +225,7 @@ export default function HeroSection() {
           <div
             className="absolute inset-0 opacity-30"
             style={{
-              backgroundImage:
-                "radial-gradient(circle, #86efac 1px, transparent 1px)",
+              backgroundImage: "radial-gradient(circle, #fdba74 1px, transparent 1px)",
               backgroundSize: "28px 28px",
             }}
           />
@@ -245,17 +233,17 @@ export default function HeroSection() {
 
         {/* Live indicator */}
         <div
-          className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-1.5 mb-8 text-sm text-green-700 font-medium"
+          className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 mb-8 text-sm text-orange-700 font-medium"
           style={{
             opacity: mounted ? 1 : 0,
             animation: mounted ? "slide-up 0.5s ease both" : "none",
           }}
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
           </span>
-          Kenya's #1 B2B Marketplace · Live Now
+          Kenya's first B2B Marketplace
         </div>
 
         {/* Heading */}
@@ -300,7 +288,7 @@ export default function HeroSection() {
 
         {/* Divider */}
         <div
-          className="w-px h-8 bg-gradient-to-b from-transparent via-green-300 to-transparent mx-auto mb-10"
+          className="w-px h-8 bg-gradient-to-b from-transparent via-orange-300 to-transparent mx-auto mb-10"
           style={{
             opacity: mounted ? 1 : 0,
             animation: mounted ? "fade-in 0.6s ease 0.5s both" : "none",
@@ -348,26 +336,14 @@ export default function HeroSection() {
               style={{ animation: "marquee 18s linear infinite", whiteSpace: "nowrap" }}
             >
               {[
-                "Nairobi Traders",
-                "Mombasa Mart",
-                "Agri-Connect",
-                "TechHub KE",
-                "FashionPoa",
-                "BuildSupply Co",
-                "Jua Kali Hub",
-                "Fresh Farms KE",
-                "Nairobi Traders",
-                "Mombasa Mart",
-                "Agri-Connect",
-                "TechHub KE",
-                "FashionPoa",
-                "BuildSupply Co",
-                "Jua Kali Hub",
-                "Fresh Farms KE",
+                "Nairobi Traders", "Mombasa Mart", "Agri-Connect", "TechHub KE",
+                "FashionPoa", "BuildSupply Co", "Jua Kali Hub", "Fresh Farms KE",
+                "Nairobi Traders", "Mombasa Mart", "Agri-Connect", "TechHub KE",
+                "FashionPoa", "BuildSupply Co", "Jua Kali Hub", "Fresh Farms KE",
               ].map((name, i) => (
                 <span
                   key={i}
-                  className="text-sm font-semibold text-gray-300 hover:text-green-500 transition-colors cursor-default"
+                  className="text-sm font-semibold text-gray-300 hover:text-orange-500 transition-colors cursor-default"
                 >
                   {name}
                 </span>

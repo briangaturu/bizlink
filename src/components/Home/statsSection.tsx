@@ -76,7 +76,7 @@ export default function StatsSection() {
         }
         .stat-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+          box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15);
         }
       `}</style>
 
@@ -92,7 +92,7 @@ export default function StatsSection() {
                 : "none",
             }}
           >
-            <h2 className="text-3xl font-bold text-primary-600">
+            <h2 className="text-3xl font-bold text-orange-600">
               <AnimatedNumber raw={stat.value} />
             </h2>
             <p className="text-gray-600 mt-2">{stat.label}</p>
