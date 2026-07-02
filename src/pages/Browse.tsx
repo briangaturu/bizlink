@@ -7,6 +7,7 @@ import { type Listing } from "../components/Browse/listingCard"
 const mockListings: Listing[] = [
   {
     id: 1,
+    sellerId: "seller-001",
     title: "Samsung Galaxy A54 5G - 128GB",
     price: "KSh 32,000",
     image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&q=80",
@@ -20,6 +21,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 2,
+    sellerId: "seller-002",
     title: "HP Laptop 15 - Core i5, 8GB RAM, 256GB SSD",
     price: "KSh 58,000",
     image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80",
@@ -32,6 +34,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 3,
+    sellerId: "seller-003",
     title: "Men's Formal Suit - Black, All Sizes",
     price: "KSh 4,500",
     image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80",
@@ -43,6 +46,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 4,
+    sellerId: "seller-004",
     title: "Sofa Set - 3+2+1 Seater Leather",
     price: "KSh 45,000",
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80",
@@ -56,6 +60,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 5,
+    sellerId: "seller-005",
     title: "Car Engine Service & Repair",
     price: "From KSh 2,500",
     image: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=80",
@@ -68,6 +73,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 6,
+    sellerId: "seller-006",
     title: "Organic Skincare Bundle - 5 Piece Set",
     price: "KSh 1,800",
     image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400&q=80",
@@ -80,6 +86,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 7,
+    sellerId: "seller-007",
     title: "Freshly Baked Cakes & Pastries - Custom Orders",
     price: "From KSh 800",
     image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80",
@@ -92,6 +99,7 @@ const mockListings: Listing[] = [
   },
   {
     id: 8,
+    sellerId: "seller-008",
     title: "Office Desk & Chair Set",
     price: "KSh 12,000",
     image: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80",
@@ -116,7 +124,7 @@ export default function Browse() {
         listing.seller.toLowerCase().includes(search.toLowerCase()) ||
         listing.location.toLowerCase().includes(search.toLowerCase())
 
-      const matchesCategory = category === "All" // extend this once real categories are on listings
+      const matchesCategory = category === "All"
 
       return matchesSearch && matchesCategory
     })
@@ -124,7 +132,6 @@ export default function Browse() {
 
   return (
     <div className="space-y-6 w-full">
-      {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Browse Listings</h1>
         <p className="text-gray-500 text-sm mt-1">
@@ -132,18 +139,13 @@ export default function Browse() {
         </p>
       </div>
 
-      {/* Search */}
       <SearchBar value={search} onChange={setSearch} />
-
-      {/* Category Filter */}
       <CategoryFilter selected={category} onChange={setCategory} />
 
-      {/* Results count */}
       <p className="text-sm text-gray-500">
         Showing <span className="font-medium text-gray-700">{filtered.length}</span> listings
       </p>
 
-      {/* Listings Grid */}
       <ListingsGrid listings={filtered} />
     </div>
   )

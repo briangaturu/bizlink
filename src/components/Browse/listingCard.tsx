@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export interface Listing {
   id: number;
+  sellerId: string | number; // <-- added
   title: string;
   price: string;
   image: string;
@@ -56,36 +58,23 @@ function ContactModal({
           from { opacity: 0; transform: scale(0.92) translateY(16px); }
           to   { opacity: 1; transform: scale(1)    translateY(0); }
         }
-        .modal-backdrop {
-          animation: backdrop-in 0.2s ease both;
-        }
-        .modal-box {
-          animation: modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
+        .modal-backdrop { animation: backdrop-in 0.2s ease both; }
+        .modal-box { animation: modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
         .contact-link {
-          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.2s ease;
+          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
         }
-        .contact-link:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-        }
-        .contact-link:active {
-          transform: scale(0.97);
-        }
+        .contact-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+        .contact-link:active { transform: scale(0.97); }
       `}</style>
 
-      {/* Backdrop */}
       <div
         className="modal-backdrop fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
         onClick={onClose}
       >
-        {/* Modal */}
         <div
           className="modal-box bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 relative"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close button */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition p-1 rounded-full hover:bg-gray-100"
@@ -95,7 +84,6 @@ function ContactModal({
             </svg>
           </button>
 
-          {/* Header */}
           <div className="mb-5 pr-6">
             <p className="text-xs text-orange-600 font-medium uppercase tracking-wide mb-1">Contact Seller</p>
             <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">
@@ -104,7 +92,6 @@ function ContactModal({
             <p className="text-sm text-gray-500 mt-1">{listing.seller} · {listing.location}</p>
           </div>
 
-          {/* Links */}
           <div className="flex flex-col gap-3">
             {listing.whatsapp && (
               <a
@@ -153,6 +140,11 @@ function ContactModal({
 
 export default function ListingCard({ listing }: ListingCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  const goToProfile = () => {
+    navigate(`/profile/${listing.sellerId}`);
+  };
 
   return (
     <>
@@ -163,8 +155,8 @@ export default function ListingCard({ listing }: ListingCardProps) {
         }
         .listing-card {
           animation: card-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.3s ease;
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+          cursor: pointer;
         }
         .listing-card:hover {
           transform: translateY(-5px);
@@ -173,8 +165,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
         .contact-btn {
           position: relative;
           overflow: hidden;
-          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.2s ease;
+          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
         }
         .contact-btn::before {
           content: '';
@@ -190,9 +181,10 @@ export default function ListingCard({ listing }: ListingCardProps) {
         }
         .contact-btn:hover::before { opacity: 1; }
         .contact-btn:active { transform: scale(0.97); }
+        .seller-link:hover { text-decoration: underline; }
       `}</style>
 
-      <div className="listing-card bg-white rounded-xl shadow hover:shadow-md overflow-hidden flex flex-col">
+      <div className="listing-card bg-white rounded-xl shadow hover:shadow-md overflow-hidden flex flex-col" onClick={goToProfile}>
         {/* Image */}
         <div className="relative h-48 bg-gray-100 overflow-hidden">
           <img
@@ -204,6 +196,22 @@ export default function ListingCard({ listing }: ListingCardProps) {
 
         {/* Content */}
         <div className="p-4 flex flex-col flex-1">
+
+          {/* Seller name — prominent, at the top of content */}
+          <button
+            className="seller-link self-start flex items-center gap-1.5 mb-2"
+            onClick={(e) => { e.stopPropagation(); goToProfile(); }}
+          >
+            <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+              <span className="text-orange-600 text-xs font-bold">
+                {listing.seller.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <span className="text-sm font-semibold text-orange-600 leading-none">
+              {listing.seller}
+            </span>
+          </button>
+
           <h3 className="font-semibold text-gray-900 text-base leading-snug mb-1 line-clamp-2">
             {listing.title}
           </h3>
@@ -214,13 +222,6 @@ export default function ListingCard({ listing }: ListingCardProps) {
 
           <div className="mt-2 text-sm text-gray-500 flex items-center gap-1">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span>{listing.seller}</span>
-          </div>
-
-          <div className="mt-1 text-sm text-gray-500 flex items-center gap-1">
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -228,7 +229,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
           </div>
 
           {/* Contact Button */}
-          <div className="mt-auto pt-3 border-t border-gray-100">
+          <div className="mt-auto pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setShowModal(true)}
               className="contact-btn w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg"
@@ -239,7 +240,6 @@ export default function ListingCard({ listing }: ListingCardProps) {
         </div>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <ContactModal listing={listing} onClose={() => setShowModal(false)} />
       )}
