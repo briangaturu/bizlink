@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../features/api/authApi";
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+
+  const [login, { isLoading }] = useLoginMutation();
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 50);
@@ -28,11 +30,12 @@ export default function Login() {
       setError("Please fill in all fields.");
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await login({ email: form.email, password: form.password }).unwrap();
       navigate("/");
-    }, 1000);
+    } catch (err: any) {
+      setError(err?.data?.message || "Invalid email or password.");
+    }
   };
 
   const inputClass = (name: string) =>
@@ -64,25 +67,18 @@ export default function Login() {
           60%     { transform: translateX(-4px); }
           80%     { transform: translateX(4px); }
         }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .login-card {
           animation: ${mounted ? "card-in 0.6s cubic-bezier(0.34,1.56,0.64,1) both" : "none"};
         }
-        .error-shake {
-          animation: shake 0.4s ease both;
-        }
+        .error-shake { animation: shake 0.4s ease both; }
         .submit-btn {
           position: relative; overflow: hidden;
-          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.2s ease,
-                      opacity 0.2s;
+          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
         }
         .submit-btn::before {
-          content: '';
-          position: absolute; inset: 0;
+          content: ''; position: absolute; inset: 0;
           background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
           opacity: 0; transition: opacity 0.2s;
         }
@@ -92,16 +88,12 @@ export default function Login() {
         }
         .submit-btn:not(:disabled):hover::before { opacity: 1; }
         .submit-btn:not(:disabled):active { transform: scale(0.98); }
-
         .spinner {
           width: 16px; height: 16px;
           border: 2px solid rgba(255,255,255,0.3);
-          border-top-color: white;
-          border-radius: 50%;
+          border-top-color: white; border-radius: 50%;
           animation: spin 0.7s linear infinite;
-          display: inline-block;
-          vertical-align: middle;
-          margin-right: 8px;
+          display: inline-block; vertical-align: middle; margin-right: 8px;
         }
       `}</style>
 
@@ -113,10 +105,7 @@ export default function Login() {
           {/* Logo */}
           <div
             className="text-center mb-8"
-            style={{
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? "slide-up 0.5s ease 0.15s both" : "none",
-            }}
+            style={{ opacity: mounted ? 1 : 0, animation: mounted ? "slide-up 0.5s ease 0.15s both" : "none" }}
           >
             <Link to="/" className="text-2xl font-bold text-gray-900 hover:opacity-75 transition-opacity">
               BizLink
@@ -136,10 +125,7 @@ export default function Login() {
 
           <div
             className="space-y-4"
-            style={{
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? "slide-up 0.5s ease 0.25s both" : "none",
-            }}
+            style={{ opacity: mounted ? 1 : 0, animation: mounted ? "slide-up 0.5s ease 0.25s both" : "none" }}
           >
             {/* Email */}
             <div>
@@ -190,20 +176,17 @@ export default function Login() {
             {/* Submit */}
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={isLoading}
               className="submit-btn w-full bg-orange-600 text-white py-3 rounded-lg font-medium hover:bg-orange-700 transition text-sm disabled:opacity-60 flex items-center justify-center"
             >
-              {loading && <span className="spinner" />}
-              {loading ? "Signing in..." : "Sign In"}
+              {isLoading && <span className="spinner" />}
+              {isLoading ? "Signing in..." : "Sign In"}
             </button>
           </div>
 
           <p
             className="text-center text-sm text-gray-500 mt-6"
-            style={{
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? "fade-in 0.5s ease 0.4s both" : "none",
-            }}
+            style={{ opacity: mounted ? 1 : 0, animation: mounted ? "fade-in 0.5s ease 0.4s both" : "none" }}
           >
             Don't have an account?{" "}
             <Link to="/register" className="text-orange-600 font-medium hover:underline">
