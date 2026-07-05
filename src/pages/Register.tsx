@@ -2,15 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "../features/api/authApi";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+
+  const [register, { isLoading }] = useRegisterMutation();
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 50);
@@ -24,8 +34,8 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.email || !form.password || !form.confirmPassword) {
-      setError("Please fill in all fields.");
+    if (!form.firstName || !form.lastName || !form.username || !form.email || !form.password || !form.confirmPassword) {
+      setError("Please fill in all required fields.");
       return;
     }
     if (form.password.length < 6) {
@@ -36,11 +46,19 @@ export default function Register() {
       setError("Passwords do not match.");
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await register({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        username: form.username,
+        email: form.email,
+        password: form.password,
+        phone: form.phone || undefined,
+      }).unwrap();
       navigate("/");
-    }, 1000);
+    } catch (err: any) {
+      setError(err?.data?.message || "Error creating account. Please try again.");
+    }
   };
 
   const inputClass = (name: string) =>
@@ -77,16 +95,9 @@ export default function Register() {
           60%     { transform: translateX(-4px); }
           80%     { transform: translateX(4px); }
         }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes bar-grow {
-          from { transform: scaleX(0); }
-          to   { transform: scaleX(1); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .error-shake { animation: shake 0.4s ease both; }
-
         .submit-btn {
           position: relative; overflow: hidden;
           transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
@@ -102,25 +113,20 @@ export default function Register() {
         }
         .submit-btn:not(:disabled):hover::before { opacity: 1; }
         .submit-btn:not(:disabled):active { transform: scale(0.98); }
-
         .spinner {
           width: 16px; height: 16px;
           border: 2px solid rgba(255,255,255,0.3);
-          border-top-color: white;
-          border-radius: 50%;
+          border-top-color: white; border-radius: 50%;
           animation: spin 0.7s linear infinite;
-          display: inline-block;
-          vertical-align: middle;
-          margin-right: 8px;
+          display: inline-block; vertical-align: middle; margin-right: 8px;
         }
-
         .strength-bar {
           transform-origin: left;
           transition: transform 0.4s ease, background-color 0.3s ease;
         }
       `}</style>
 
-      <div className="min-h-[80vh] flex items-center justify-center">
+      <div className="min-h-[80vh] flex items-center justify-center py-8">
         <div
           className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8"
           style={{
@@ -131,10 +137,7 @@ export default function Register() {
           {/* Logo */}
           <div
             className="text-center mb-8"
-            style={{
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? "slide-up 0.5s ease 0.15s both" : "none",
-            }}
+            style={{ opacity: mounted ? 1 : 0, animation: mounted ? "slide-up 0.5s ease 0.15s both" : "none" }}
           >
             <Link to="/" className="text-2xl font-bold text-gray-900 hover:opacity-75 transition-opacity">
               BizLink
@@ -154,14 +157,44 @@ export default function Register() {
 
           <div
             className="space-y-4"
-            style={{
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? "slide-up 0.5s ease 0.25s both" : "none",
-            }}
+            style={{ opacity: mounted ? 1 : 0, animation: mounted ? "slide-up 0.5s ease 0.25s both" : "none" }}
           >
+            {/* First & Last Name */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">First Name <span className="text-red-400">*</span></label>
+                <input
+                  type="text" name="firstName" value={form.firstName}
+                  onChange={handleChange} placeholder="John"
+                  className={inputClass("firstName")}
+                  onFocus={() => setFocused("firstName")} onBlur={() => setFocused(null)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Last Name <span className="text-red-400">*</span></label>
+                <input
+                  type="text" name="lastName" value={form.lastName}
+                  onChange={handleChange} placeholder="Doe"
+                  className={inputClass("lastName")}
+                  onFocus={() => setFocused("lastName")} onBlur={() => setFocused(null)}
+                />
+              </div>
+            </div>
+
+            {/* Username */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username <span className="text-red-400">*</span></label>
+              <input
+                type="text" name="username" value={form.username}
+                onChange={handleChange} placeholder="johndoe"
+                className={inputClass("username")}
+                onFocus={() => setFocused("username")} onBlur={() => setFocused(null)}
+              />
+            </div>
+
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className="text-red-400">*</span></label>
               <input
                 type="email" name="email" value={form.email}
                 onChange={handleChange} placeholder="you@example.com"
@@ -170,9 +203,22 @@ export default function Register() {
               />
             </div>
 
+            {/* Phone (optional) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone <span className="text-gray-400 font-normal">(optional)</span>
+              </label>
+              <input
+                type="tel" name="phone" value={form.phone}
+                onChange={handleChange} placeholder="+254712345678"
+                className={inputClass("phone")}
+                onFocus={() => setFocused("phone")} onBlur={() => setFocused(null)}
+              />
+            </div>
+
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password <span className="text-red-400">*</span></label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -199,7 +245,7 @@ export default function Register() {
                 </button>
               </div>
 
-              {/* Password strength bar */}
+              {/* Strength bar */}
               {form.password && (
                 <div className="mt-2">
                   <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
@@ -219,7 +265,7 @@ export default function Register() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span className="text-red-400">*</span></label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -228,7 +274,6 @@ export default function Register() {
                   className={`${inputClass("confirmPassword")} pr-10`}
                   onFocus={() => setFocused("confirmPassword")} onBlur={() => setFocused(null)}
                 />
-                {/* Match indicator */}
                 {form.confirmPassword && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2">
                     {form.password === form.confirmPassword ? (
@@ -248,20 +293,17 @@ export default function Register() {
             {/* Submit */}
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={isLoading}
               className="submit-btn w-full bg-orange-600 text-white py-3 rounded-lg font-medium hover:bg-orange-700 transition text-sm disabled:opacity-60 flex items-center justify-center"
             >
-              {loading && <span className="spinner" />}
-              {loading ? "Creating account..." : "Create Account"}
+              {isLoading && <span className="spinner" />}
+              {isLoading ? "Creating account..." : "Create Account"}
             </button>
           </div>
 
           <p
             className="text-center text-sm text-gray-500 mt-6"
-            style={{
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? "fade-in 0.5s ease 0.4s both" : "none",
-            }}
+            style={{ opacity: mounted ? 1 : 0, animation: mounted ? "fade-in 0.5s ease 0.4s both" : "none" }}
           >
             Already have an account?{" "}
             <Link to="/login" className="text-orange-600 font-medium hover:underline">

@@ -1,25 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { Provider } from 'react-redux'
+import { store } from '@/app/store.ts'
 import App from './App.tsx'
 import './index.css'
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-})
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </QueryClientProvider>
+    </Provider>
   </React.StrictMode>,
 )
