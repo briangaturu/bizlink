@@ -131,21 +131,49 @@ export default function Browse() {
   }, [search, category])
 
   return (
-    <div className="space-y-6 w-full">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Browse Listings</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Discover products and services from trusted sellers across Kenya
+    <div className="space-y-8 w-full pb-12">
+      <style>{`
+        @keyframes fade-in-down {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .browse-header {
+          animation: fade-in-down 0.6s ease-out;
+        }
+      `}</style>
+
+      {/* Header */}
+      <div className="browse-header">
+        <div className="mb-3">
+          <h1 className="text-5xl font-black text-gray-900 bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+            Explore Marketplace
+          </h1>
+        </div>
+        <p className="text-lg text-gray-600 font-medium">
+          Discover thousands of products and services from trusted sellers across Kenya
         </p>
       </div>
 
-      <SearchBar value={search} onChange={setSearch} />
-      <CategoryFilter selected={category} onChange={setCategory} />
+      {/* Search & Filters Section */}
+      <div className="sticky top-20 z-40 bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-200 p-6 shadow-md">
+        <div className="space-y-4">
+          <SearchBar value={search} onChange={setSearch} />
+          <CategoryFilter selected={category} onChange={setCategory} />
+        </div>
+      </div>
 
-      <p className="text-sm text-gray-500">
-        Showing <span className="font-medium text-gray-700">{filtered.length}</span> listings
-      </p>
+      {/* Results Header */}
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-orange-500" />
+          <p className="text-sm font-semibold text-gray-700">
+            <span className="text-orange-600">{filtered.length}</span> results found
+          </p>
+        </div>
+        <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Verified Sellers</p>
+      </div>
 
+      {/* Listings Grid */}
       <ListingsGrid listings={filtered} />
     </div>
   )

@@ -71,12 +71,28 @@ export default function StatsSection() {
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
         .stat-card {
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.3s ease;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border: 1px solid rgba(234, 88, 12, 0.1);
+        }
+        .stat-card::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, rgba(234, 88, 12, 0.5), transparent);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s ease;
         }
         .stat-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15);
+          transform: translateY(-8px);
+          box-shadow: 0 16px 32px rgba(234, 88, 12, 0.2);
+          border-color: rgba(234, 88, 12, 0.3);
+        }
+        .stat-card:hover::before {
+          transform: scaleX(1);
         }
       `}</style>
 
@@ -84,7 +100,7 @@ export default function StatsSection() {
         {stats.map((stat, i) => (
           <div
             key={stat.label}
-            className="stat-card bg-white p-6 rounded-xl shadow text-center"
+            className="stat-card bg-gradient-to-br from-white to-orange-50 p-8 rounded-2xl shadow-md text-center"
             style={{
               opacity: visible ? 1 : 0,
               animation: visible
@@ -92,10 +108,12 @@ export default function StatsSection() {
                 : "none",
             }}
           >
-            <h2 className="text-3xl font-bold text-orange-600">
-              <AnimatedNumber raw={stat.value} />
-            </h2>
-            <p className="text-gray-600 mt-2">{stat.label}</p>
+            <div className="inline-block">
+              <h2 className="text-5xl font-black bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+                <AnimatedNumber raw={stat.value} />
+              </h2>
+            </div>
+            <p className="text-gray-600 mt-3 font-semibold text-sm uppercase tracking-wide">{stat.label}</p>
           </div>
         ))}
       </div>

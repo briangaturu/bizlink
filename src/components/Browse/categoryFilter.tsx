@@ -44,21 +44,19 @@ export default function CategoryFilter({ selected, onChange }: CategoryFilterPro
         .cat-btn {
           position: relative;
           overflow: hidden;
-          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.2s ease,
-                      background 0.2s ease,
-                      color 0.2s ease,
-                      border-color 0.2s ease;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
           animation: cat-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
-        .cat-btn:hover {
+        .cat-btn:hover:not(.active) {
           transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(107, 114, 128, 0.1);
         }
         .cat-btn:active {
-          transform: scale(0.95);
+          transform: scale(0.96);
         }
         .cat-btn.active {
-          box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+          box-shadow: 0 8px 20px rgba(234, 88, 12, 0.35);
+          transform: translateY(-2px);
         }
         .ripple-circle {
           position: absolute;
@@ -73,7 +71,7 @@ export default function CategoryFilter({ selected, onChange }: CategoryFilterPro
 
       <div
         ref={containerRef}
-        className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+        className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
       >
         {categories.map((cat, i) => {
           const isActive = selected === cat;
@@ -81,10 +79,10 @@ export default function CategoryFilter({ selected, onChange }: CategoryFilterPro
             <button
               key={cat}
               onClick={(e) => handleClick(cat, e)}
-              className={`cat-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border ${
+              className={`cat-btn whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-semibold border-2 transition-all ${
                 isActive
-                  ? "active bg-orange-600 text-white border-orange-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-orange-400 hover:text-orange-600"
+                  ? "active bg-gradient-to-r from-orange-600 to-orange-500 text-white border-orange-600 shadow-lg"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-orange-300 hover:bg-orange-50"
               }`}
               style={{ animationDelay: `${i * 0.05}s` }}
             >

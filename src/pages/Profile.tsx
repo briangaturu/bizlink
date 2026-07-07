@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/app/store";
 
 // Mock data — replace with RTK Query later
-const mockProfile = {
+const mockBusinesses: Record<string, any> = {
+  "seller-001": {
   id: "seller-001",
   firstName: "Brian",
   lastName: "Gaturu",
@@ -21,6 +24,7 @@ const mockProfile = {
   tiktok: "briangaturu",
   linkedin: "",
   website: "https://briangaturu.co.ke",
+  },
 };
 
 const mockListings = [
@@ -37,8 +41,150 @@ const mockListings = [
 
 interface ListingModalProps {
   listing: typeof mockListings[0];
-  seller: typeof mockProfile;
+  seller: any;
   onClose: () => void;
+}
+
+function UpdateProfileModal({ onClose, profile }: { onClose: () => void; profile: any }) {
+  const [formData, setFormData] = useState({
+    bio: profile?.bio || "",
+    location: profile?.location || "",
+    whatsapp: profile?.whatsapp || "",
+    phone: profile?.phone || "",
+    website: profile?.website || "",
+    instagram: profile?.instagram || "",
+    facebook: profile?.facebook || "",
+  });
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setTimeout(() => {
+      setIsSaving(false);
+      onClose();
+    }, 1000);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Update Business Profile</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+            <textarea
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              placeholder="Tell about your business"
+              rows={3}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="e.g., Nairobi CBD"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+254712345678"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+            <input
+              type="tel"
+              name="whatsapp"
+              value={formData.whatsapp}
+              onChange={handleChange}
+              placeholder="254712345678"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
+            <input
+              type="url"
+              name="website"
+              value={formData.website}
+              onChange={handleChange}
+              placeholder="https://example.com"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+            <input
+              type="text"
+              name="instagram"
+              value={formData.instagram}
+              onChange={handleChange}
+              placeholder="username"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+            <input
+              type="text"
+              name="facebook"
+              value={formData.facebook}
+              onChange={handleChange}
+              placeholder="username"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save"}
+          </button>
+          <button
+            onClick={onClose}
+            className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function ListingModal({ listing, seller, onClose }: ListingModalProps) {
@@ -153,14 +299,18 @@ function ListingModal({ listing, seller, onClose }: ListingModalProps) {
 }
 
 export default function Profile() {
-  const { sellerId } = useParams();
+  const { id } = useParams();
+  const { user: currentUser } = useSelector((state: RootState) => state.auth);
   const [selectedListing, setSelectedListing] = useState<typeof mockListings[0] | null>(null);
   const [following, setFollowing] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
 
-  // TODO: replace with useGetUserByIdQuery(sellerId) and useGetSellerStatsQuery(sellerId)
-  const profile = mockProfile;
+  const profile = useMemo(() => {
+    return mockBusinesses[id || "seller-001"] || mockBusinesses["seller-001"];
+  }, [id]);
+
   const listings = mockListings;
-
+  const isOwnProfile = currentUser?.userId === id;
   const initials = `${profile.firstName.charAt(0)}${profile.lastName.charAt(0)}`.toUpperCase();
 
   return (
@@ -253,17 +403,28 @@ export default function Profile() {
             </p>
           )}
 
-          {/* Follow button */}
-          <button
-            onClick={() => setFollowing(!following)}
-            className={`follow-btn mt-4 px-8 py-2 rounded-full text-sm font-semibold transition ${
-              following
-                ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                : "bg-orange-600 text-white hover:bg-orange-700"
-            }`}
-          >
-            {following ? "Following" : "Follow"}
-          </button>
+          {/* Buttons */}
+          <div className="flex items-center gap-2 mt-4">
+            {isOwnProfile ? (
+              <button
+                onClick={() => setShowUpdateModal(true)}
+                className="follow-btn px-8 py-2 rounded-full text-sm font-semibold bg-orange-600 text-white hover:bg-orange-700 transition"
+              >
+                Update Profile
+              </button>
+            ) : (
+              <button
+                onClick={() => setFollowing(!following)}
+                className={`follow-btn px-8 py-2 rounded-full text-sm font-semibold transition ${
+                  following
+                    ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-orange-600 text-white hover:bg-orange-700"
+                }`}
+              >
+                {following ? "Following" : "Follow"}
+              </button>
+            )}
+          </div>
 
           {/* Social links */}
           <div className="flex items-center gap-4 mt-5">
@@ -321,33 +482,16 @@ export default function Profile() {
         {/* Divider */}
         <div className="border-t border-gray-100 mx-4" />
 
-        {/* Listings label */}
-        <div className="flex items-center gap-2 px-4 py-3">
-          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-          </svg>
-          <span className="text-sm font-semibold text-gray-700">Listings</span>
-          <span className="text-xs text-gray-400 ml-auto">{listings.length} items</span>
-        </div>
-
-        {/* TikTok-style thumbnail grid */}
-        <div className="grid grid-cols-3 gap-0.5 px-0.5">
+        {/* Listings grid */}
+        <div className="grid grid-cols-3 gap-1 px-2">
           {listings.map((listing) => (
-            <div
-              key={listing.id}
-              className="thumb relative aspect-square bg-gray-100 overflow-hidden"
-              onClick={() => setSelectedListing(listing)}
-            >
-              <img
-                src={listing.image}
-                alt={listing.title}
-                className="w-full h-full object-cover"
-              />
-              {/* Price pill on hover effect via overlay */}
-              <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors duration-200 flex items-end p-1.5">
-                <span className="text-white text-xs font-bold drop-shadow opacity-0 hover:opacity-100 transition-opacity">
-                  {listing.price}
-                </span>
+            <div key={listing.id} className="relative">
+              <div className="thumb relative pt-[100%] bg-gray-100 rounded overflow-hidden" onClick={() => setSelectedListing(listing)}>
+                <img
+                  src={listing.image}
+                  alt={listing.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
               </div>
             </div>
           ))}
@@ -369,6 +513,14 @@ export default function Profile() {
           listing={selectedListing}
           seller={profile}
           onClose={() => setSelectedListing(null)}
+        />
+      )}
+
+      {/* Update Profile Modal */}
+      {showUpdateModal && (
+        <UpdateProfileModal
+          onClose={() => setShowUpdateModal(false)}
+          profile={profile}
         />
       )}
     </>

@@ -155,84 +155,120 @@ export default function ListingCard({ listing }: ListingCardProps) {
         }
         .listing-card {
           animation: card-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
           cursor: pointer;
+          position: relative;
         }
         .listing-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 16px 32px rgba(0,0,0,0.1);
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        .listing-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 60%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          border-radius: 1rem;
+          pointer-events: none;
+        }
+        .listing-card:hover::before {
+          opacity: 0.3;
+        }
+        .image-container {
+          position: relative;
+          overflow: hidden;
+        }
+        .image-container img {
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .listing-card:hover .image-container img {
+          transform: scale(1.08);
         }
         .contact-btn {
           position: relative;
           overflow: hidden;
-          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .contact-btn::before {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
           opacity: 0;
           transition: opacity 0.2s;
         }
         .contact-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+          box-shadow: 0 8px 20px rgba(234, 88, 12, 0.4);
         }
         .contact-btn:hover::before { opacity: 1; }
-        .contact-btn:active { transform: scale(0.97); }
-        .seller-link:hover { text-decoration: underline; }
+        .contact-btn:active { transform: scale(0.96); }
+        .seller-link:hover { color: #ea6317; }
       `}</style>
 
-      <div className="listing-card bg-white rounded-xl shadow hover:shadow-md overflow-hidden flex flex-col" onClick={goToProfile}>
-        {/* Image */}
-        <div className="relative h-48 bg-gray-100 overflow-hidden">
+      <div className="listing-card bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
+        {/* Image Container with Badge */}
+        <div className="image-container relative h-56 bg-gradient-to-br from-gray-100 to-gray-50 overflow-hidden">
           <img
             src={listing.image}
             alt={listing.title}
-            className="w-full h-full object-cover hover:scale-105 transition duration-300"
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          
+          {/* Rating Badge */}
+          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg border border-white/50">
+            <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <span className="text-xs font-bold text-gray-900">{listing.rating}.0</span>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-4 flex flex-col flex-1">
-
-          {/* Seller name — prominent, at the top of content */}
+        <div className="p-5 flex flex-col flex-1">
+          {/* Seller */}
           <button
-            className="seller-link self-start flex items-center gap-1.5 mb-2"
+            className="seller-link self-start flex items-center gap-2 mb-3 group"
             onClick={(e) => { e.stopPropagation(); goToProfile(); }}
           >
-            <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-              <span className="text-orange-600 text-xs font-bold">
-                {listing.seller.charAt(0).toUpperCase()}
-              </span>
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shrink-0 text-white font-bold text-xs shadow-md">
+              {listing.seller.charAt(0).toUpperCase()}
             </div>
-            <span className="text-sm font-semibold text-orange-600 leading-none">
+            <span className="text-sm font-semibold text-orange-600 group-hover:text-orange-700 transition-colors">
               {listing.seller}
             </span>
           </button>
 
-          <h3 className="font-semibold text-gray-900 text-base leading-snug mb-1 line-clamp-2">
+          {/* Title */}
+          <h3 className="font-bold text-gray-900 text-base leading-snug mb-3 line-clamp-2 h-10">
             {listing.title}
           </h3>
 
-          <p className="text-orange-600 font-bold text-lg mb-2">{listing.price}</p>
+          {/* Price */}
+          <p className="text-orange-600 font-bold text-xl mb-3">{listing.price}</p>
 
-          <StarRating rating={listing.rating} reviews={listing.reviews} />
+          {/* Rating & Reviews */}
+          <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+            <StarRating rating={listing.rating} reviews={listing.reviews} />
+          </div>
 
-          <div className="mt-2 text-sm text-gray-500 flex items-center gap-1">
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* Location */}
+          <div className="text-sm text-gray-600 flex items-center gap-2 mb-4">
+            <svg className="w-4 h-4 text-orange-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>{listing.location}</span>
+            <span className="font-medium">{listing.location}</span>
           </div>
 
           {/* Contact Button */}
-          <div className="mt-auto pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
+          <div className="mt-auto" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setShowModal(true)}
-              className="contact-btn w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg"
+              className="contact-btn w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white text-sm font-semibold px-4 py-3 rounded-xl transition-all shadow-md"
             >
               Contact Seller
             </button>

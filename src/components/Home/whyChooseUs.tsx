@@ -50,53 +50,74 @@ export default function WhyChooseUs() {
           to   { opacity: 1; transform: translateY(0)   scale(1); }
         }
         .why-card {
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.3s ease;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border: 1px solid rgba(229, 231, 235, 1);
+        }
+        .why-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(234, 88, 12, 0.05), rgba(251, 146, 60, 0.05));
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 0;
         }
         .why-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+          transform: translateY(-8px);
+          box-shadow: 0 16px 40px rgba(234, 88, 12, 0.2);
+          border-color: rgba(234, 88, 12, 0.3);
         }
-        .why-card:hover .why-icon {
-          transform: scale(1.2) rotate(-6deg);
-        }
-        .why-card:hover .why-underline {
-          transform: scaleX(1);
+        .why-card:hover::before {
+          opacity: 1;
         }
         .why-icon {
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          display: inline-block;
+          width: 56px;
+          height: 56px;
+          border-radius: 14px;
+          background: linear-gradient(135deg, rgba(234, 88, 12, 0.1), rgba(251, 146, 60, 0.1));
+          display: flex;
+          align-items: center;
+          justify-center;
+          font-size: 28px;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          margin-bottom: 16px;
         }
-        .why-underline {
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        .why-card:hover .why-icon {
+          background: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(251, 146, 60, 0.2));
+          transform: scale(1.15) rotate(8deg);
         }
       `}</style>
 
       <div
         ref={ref}
-        className="bg-white rounded-2xl shadow p-8"
+        className="bg-gradient-to-br from-white via-orange-50/30 to-white rounded-3xl shadow-lg border border-gray-100 p-12"
         style={{
           opacity: visible ? 1 : 0,
           animation: visible ? "section-rise 0.5s ease both" : "none",
         }}
       >
         {/* Heading */}
-        <h2
-          className="text-2xl font-bold text-gray-900 mb-8 text-center"
-          style={{
-            opacity: visible ? 1 : 0,
-            animation: visible ? "section-rise 0.5s ease 0.1s both" : "none",
-          }}
-        >
-          Why Choose BizLink?
-        </h2>
+        <div className="text-center mb-12">
+          <h2
+            className="text-4xl font-black bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4"
+            style={{
+              opacity: visible ? 1 : 0,
+              animation: visible ? "section-rise 0.5s ease 0.1s both" : "none",
+            }}
+          >
+            Why Choose BizLink?
+          </h2>
+          <div className="w-16 h-1 bg-gradient-to-r from-orange-600 to-orange-500 rounded-full mx-auto" />
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 relative z-10">
           {reasons.map((reason, i) => (
             <div
               key={reason.title}
-              className="why-card rounded-xl p-4"
+              className="why-card bg-white rounded-2xl p-7"
               style={{
                 opacity: visible ? 1 : 0,
                 animation: visible
@@ -105,13 +126,16 @@ export default function WhyChooseUs() {
               }}
             >
               {/* Icon */}
-              <div className="why-icon text-3xl mb-4">{reason.icon}</div>
+              <div className="why-icon">{reason.icon}</div>
 
-              {/* Title + underline */}
-              <h3 className="font-semibold text-lg mb-2">{reason.title}</h3>
-              <div className="why-underline h-0.5 bg-gray-200 rounded-full mb-3" />
+              {/* Title */}
+              <h3 className="font-bold text-lg text-gray-900 mb-3">{reason.title}</h3>
 
-              <p className="text-gray-600">{reason.description}</p>
+              {/* Description */}
+              <p className="text-gray-600 leading-relaxed text-sm">{reason.description}</p>
+
+              {/* Decorative corner */}
+              <div className="absolute bottom-0 right-0 w-12 h-12 bg-gradient-to-tl from-orange-100/20 to-transparent rounded-tl-2xl" />
             </div>
           ))}
         </div>
