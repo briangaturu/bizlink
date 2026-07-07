@@ -1,12 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import type { RootState } from '../src/app/store'
+import type { RootState } from '@/app/store'
 
 // Pages
 import Home from '@/pages/Home'
 import ProductDetail from '@/pages/ProductDetail'
 import Profile from '@/pages/Profile'
 import Browse from '@/pages/Browse'
+import Dashboard from '@/pages/Dashboard'
 import { Layout } from './dashboardDesign/layout'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -14,7 +15,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 
 function App() {
-  const { accessToken, user } = useSelector((state: RootState) => state.auth)
+  const { accessToken } = useSelector((state: RootState) => state.auth)
 
   return (
     <Routes>
@@ -35,19 +36,13 @@ function App() {
             accessToken ? <Profile /> : <Navigate to="/login" replace />
           }
         />
+        <Route
+          path="dashboard"
+          element={
+            accessToken ? <Dashboard /> : <Navigate to="/login" replace />
+          }
+        />
       </Route>
-
-      {/* ADMIN ROUTES */}
-      {/* <Route
-        path="/admin/*"
-        element={
-          accessToken && user?.role === 'ADMIN'
-            ? <AdminLayout />
-            : <Navigate to="/login" replace />
-        }
-      > */}
-        {/* <Route path="dashboard" element={<AdminDashboard />} /> */}
-      {/* </Route> */}
 
       {/* FALLBACK */}
       <Route path="*" element={<Navigate to="/" replace />} />

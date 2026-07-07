@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-
-const isLoggedIn = false;
+import type { RootState } from "@/app/store";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? "text-orange-600 font-medium" : "text-gray-700 hover:text-gray-900";
@@ -11,6 +11,8 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const isLoggedIn = Boolean(accessToken);
 
   useEffect(() => {
     setMounted(true);

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../features/api/authApi";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -55,7 +56,8 @@ export default function Register() {
         password: form.password,
         phone: form.phone || undefined,
       }).unwrap();
-      navigate("/");
+      toast.success("Account created successfully! Please sign in.");
+      navigate("/login");
     } catch (err: any) {
       setError(err?.data?.message || "Error creating account. Please try again.");
     }
@@ -68,7 +70,6 @@ export default function Register() {
       : "border-gray-200 hover:border-gray-300"
     }`;
 
-  // Password strength
   const strength = !form.password ? 0 : form.password.length < 6 ? 1 : form.password.length < 10 ? 2 : 3;
   const strengthLabel = ["", "Weak", "Fair", "Strong"][strength];
   const strengthColor = ["", "bg-red-400", "bg-yellow-400", "bg-green-500"][strength];
@@ -203,7 +204,7 @@ export default function Register() {
               />
             </div>
 
-            {/* Phone (optional) */}
+            {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone <span className="text-gray-400 font-normal">(optional)</span>
@@ -245,7 +246,6 @@ export default function Register() {
                 </button>
               </div>
 
-              {/* Strength bar */}
               {form.password && (
                 <div className="mt-2">
                   <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
